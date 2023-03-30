@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "986596941193",
+    "project_id": "mynores-flutter",
+    "storage_bucket": "mynores-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986596941193:android:3503fd5c2e7bf984aa5558",
+        "android_client_info": {
+          "package_name": "com.example.mynotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "986596941193-megiskbuhgbe7r0lbbvgsdjkpsnj4jse.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHM8ioJssgCj4S2_H3pAI4Tr6aXY3Z_No"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "986596941193-megiskbuhgbe7r0lbbvgsdjkpsnj4jse.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
