@@ -1,38 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:mynotes/LoginView/loginView.dart';
 import 'package:mynotes/firebase_options.dart';
-void main(){
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
-}
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const LoginView(),
-    );
-  }
-}
-
-class RegisterView extends StatefulWidget {
-  const RegisterView({Key? key}) : super(key: key);
+class LoginView extends StatefulWidget {
+  const LoginView({Key? key}) : super(key: key);
 
   @override
-  State<RegisterView> createState() => _RegisterViewState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _RegisterViewState extends State<RegisterView> {
-
+class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
 
@@ -43,6 +21,7 @@ class _RegisterViewState extends State<RegisterView> {
     _password = TextEditingController();
     super.initState();
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -50,11 +29,12 @@ class _RegisterViewState extends State<RegisterView> {
     _password.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Register"),
+        title: const Text("Login"),
       ),
       body: FutureBuilder(
         future: Firebase.initializeApp(
@@ -70,28 +50,33 @@ class _RegisterViewState extends State<RegisterView> {
                     enableSuggestions: false,
                     autocorrect: false,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                        hintText: "Email"
-                    ),
+                    decoration: const InputDecoration(hintText: "Email"),
                   ),
                   TextField(
                     controller: _password,
                     obscureText: true,
                     enableSuggestions: false,
                     autocorrect: false,
-                    decoration: const InputDecoration(
-                        hintText: "Password"
-                    ),
+                    decoration: const InputDecoration(hintText: "Password"),
                   ),
-                  TextButton(onPressed: () async {
-                    final email = _email.text;
-                    final password = _password.text;
-                    final user = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(email: email,
-                        password: password);
-                    print(user);
-                  },
-                    child: const Text("Register"),),
+                  TextButton(
+                    onPressed: () async {
+                      final email = _email.text;
+                      final password = _password.text;
+                      try {
+                        final user = await FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                                email: email, password: password);
+                        print(user);
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == "user-not-found")
+                          print("Not found");
+                        else
+                          print("something bad");
+                      }
+                    },
+                    child: const Text("Login"),
+                  ),
                 ],
               );
             default:
@@ -102,7 +87,3 @@ class _RegisterViewState extends State<RegisterView> {
     );
   }
 }
-
-
-
-
