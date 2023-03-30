@@ -3,7 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/LoginView/loginView.dart';
 import 'package:mynotes/firebase_options.dart';
-void main(){
+
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
@@ -32,7 +33,6 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-
   late final TextEditingController _email;
   late final TextEditingController _password;
 
@@ -43,6 +43,7 @@ class _RegisterViewState extends State<RegisterView> {
     _password = TextEditingController();
     super.initState();
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -50,6 +51,7 @@ class _RegisterViewState extends State<RegisterView> {
     _password.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,28 +72,40 @@ class _RegisterViewState extends State<RegisterView> {
                     enableSuggestions: false,
                     autocorrect: false,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                        hintText: "Email"
-                    ),
+                    decoration: const InputDecoration(hintText: "Email"),
                   ),
                   TextField(
                     controller: _password,
                     obscureText: true,
                     enableSuggestions: false,
                     autocorrect: false,
-                    decoration: const InputDecoration(
-                        hintText: "Password"
-                    ),
+                    decoration: const InputDecoration(hintText: "Password"),
                   ),
-                  TextButton(onPressed: () async {
-                    final email = _email.text;
-                    final password = _password.text;
-                    final user = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(email: email,
-                        password: password);
-                    print(user);
-                  },
-                    child: const Text("Register"),),
+                  TextButton(
+                    onPressed: () async {
+                      final email = _email.text;
+                      final password = _password.text;
+                      try {
+                        final user = await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                                email: email, password: password);
+                        print(user);
+
+                        //for weak password
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == "weak-password")
+                          print("weak password");
+                        else if (e.code=='email-already-in-use')
+                          print("the user already in use");
+                        else if (e.code=='invalid-email')
+                          print("invalid email");
+                        else
+
+                          print(e);
+                      }
+                    },
+                    child: const Text("Register"),
+                  ),
                 ],
               );
             default:
@@ -102,7 +116,3 @@ class _RegisterViewState extends State<RegisterView> {
     );
   }
 }
-
-
-
-
