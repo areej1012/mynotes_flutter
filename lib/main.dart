@@ -1,8 +1,10 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:mynotes/LoginView/loginView.dart';
+import 'package:mynotes/View/loginView.dart';
 import 'package:mynotes/firebase_options.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,43 +22,24 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginView(),
+      home: const HomePage(),
     );
   }
 }
 
-class RegisterView extends StatefulWidget {
-  const RegisterView({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<RegisterView> createState() => _RegisterViewState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _RegisterViewState extends State<RegisterView> {
-  late final TextEditingController _email;
-  late final TextEditingController _password;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    _email = TextEditingController();
-    _password = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    _email.dispose();
-    _password.dispose();
-    super.dispose();
-  }
-
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Register"),
+        title: const Text("Home"),
       ),
       body: FutureBuilder(
         future: Firebase.initializeApp(
@@ -65,49 +48,12 @@ class _RegisterViewState extends State<RegisterView> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              return Column(
-                children: [
-                  TextField(
-                    controller: _email,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(hintText: "Email"),
-                  ),
-                  TextField(
-                    controller: _password,
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    decoration: const InputDecoration(hintText: "Password"),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      final email = _email.text;
-                      final password = _password.text;
-                      try {
-                        final user = await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                                email: email, password: password);
-                        print(user);
-
-                        //for weak password
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == "weak-password")
-                          print("weak password");
-                        else if (e.code=='email-already-in-use')
-                          print("the user already in use");
-                        else if (e.code=='invalid-email')
-                          print("invalid email");
-                        else
-
-                          print(e);
-                      }
-                    },
-                    child: const Text("Register"),
-                  ),
-                ],
-              );
+              final user = FirebaseAuth.instance.currentUser;
+              if (user?.emailVerified ?? false)
+                print("Done Veriv");
+              else
+                print("No Veriv");
+              return const Text("Done");
             default:
               return const Text("Loading...");
           }
@@ -116,3 +62,6 @@ class _RegisterViewState extends State<RegisterView> {
     );
   }
 }
+
+
+
