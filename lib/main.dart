@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/View/RegisterView.dart';
+import 'package:mynotes/View/VerifyEmailView.dart';
 import 'package:mynotes/View/loginView.dart';
 import 'package:mynotes/firebase_options.dart';
 
@@ -47,14 +48,18 @@ class _HomePageState extends State<HomePage> {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-          // final user = FirebaseAuth.instance.currentUser;
-          // if (user?.emailVerified ?? false)
-          //   print("Done Veriv");
-          // else {
-          //   print("No Veriv");
-          //  return const VerifyEmail();
-          // }
-            return const LoginView();
+            final user = FirebaseAuth.instance.currentUser;
+print(user);
+            if (user != null) {
+              if (user.emailVerified) {
+                print("Email is verified");
+              } else {
+                return const VerifyEmail();
+              }
+            } else {
+              return const LoginView();
+            }
+            return const Text("Done");
           default:
             return const CircularProgressIndicator();
         }
@@ -62,4 +67,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
