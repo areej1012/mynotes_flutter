@@ -7,6 +7,7 @@ import 'package:mynotes/View/VerifyEmailView.dart';
 import 'package:mynotes/View/loginView.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/firebase_options.dart';
+import 'package:mynotes/main.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -114,27 +115,6 @@ class _NotesViewState extends State<NotesView> {
   }
 }
 
-Future<bool> showLogOutDialog(BuildContext context) {
-  return showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-            title: const Text("Sign out"),
-            content: const Text('Are you sure you want to sign out?'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-                child: Text("Cancel"),
-              ),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
-                  child: Text("Log out")),
-            ]);
-      }).then((value) => value ?? false);
-}
+
 
 enum MenuAction { logout }

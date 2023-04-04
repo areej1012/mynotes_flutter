@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:mynotes/View/loginView.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'dart:developer' as devtools show log;
+
+import 'package:mynotes/utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -35,7 +38,9 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Login"),),
+      appBar: AppBar(
+        title: Text("Login"),
+      ),
       body: Column(
         children: [
           TextField(
@@ -58,14 +63,26 @@ class _LoginViewState extends State<LoginView> {
               final password = _password.text;
               try {
                 final user = await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(email: email, password: password);
-                Navigator.pushNamedAndRemoveUntil(context, notesRoute, (route) => false);
+                    .signInWithEmailAndPassword(
+                        email: email, password: password);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, notesRoute, (route) => false);
                 devtools.log(user.toString());
               } on FirebaseAuthException catch (e) {
-                if (e.code == "user-not-found"){
-                  devtools.log("Not found");}
-                else{
-                  devtools.log("something bad");}
+                if (e.code == "user-not-found") {
+                 await showErrorDialog(context, "The user not found");
+                 // devtools.log("Not found");
+                }
+                else if (e.code == 'wrong-password') {
+                  await showErrorDialog(context, "Wrong password");
+                }
+                else {
+                  await showErrorDialog(context, "Error ${e.code}");
+                  //devtools.log("something bad");
+                }
+              }
+              catch (e){
+                 await showErrorDialog(context, e.toString());
               }
             },
             child: const Text("Login"),
@@ -81,3 +98,5 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 }
+
+
